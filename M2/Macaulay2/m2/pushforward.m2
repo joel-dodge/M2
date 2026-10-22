@@ -122,7 +122,8 @@ monomialOrderFromOpts = (opts) -> (
 -- a splitting of f.cache.DegreeMap to use as a DegreeMap when constructing the
 -- projection from graphRing f to source f.
 makeSectionForDegreeMap = (f) -> (
-    if degreeLength source f === 0 then return null;
+    -- if there are no degrees on the source then giving everything the empty degree is a section
+    if degreeLength source f === 0 then return d -> {};
 
     G := degreeGroup source f;
     -- the linear map that f induces on DegreeGroups as a matrix
@@ -135,7 +136,7 @@ makeSectionForDegreeMap = (f) -> (
     (d) -> (
         -- d' is the element of degreeGroup target f corresponding to d
         d' := matrix transpose {d};
-        -- get coefficients for d' against generators for G ~ D.
+        -- get coefficients for d' against generators for G \isom D.
         -- this produces mild nonsense if d' is not in D but that doesn't matter
         -- since we only apply the resulting projecting to image f.
         flatten entries(d' // inducedMap(ambient D, D) // coverMap D)
@@ -158,6 +159,8 @@ pushNonLinear := (opts, f0, M) -> (
     if isHomogeneous M  then assert isHomogeneous m;
     if isHomogeneous f0 then assert isHomogeneous f;
 
+    ishgs := all({f, m}, isHomogeneous);
+
     s := numgens S;
     r := numgens R;
     monorder := (monomialOrderFromOpts opts)(r, s);
@@ -167,7 +170,7 @@ pushNonLinear := (opts, f0, M) -> (
     xvars := map(G, R, submatrix(vars G, toList(0..r - 1)));
     m1 := presentation (cokernel xvars m  **  cokernel generators J);
 
-    if opts.UseHilbertFunction and all({f, m}, isHomogeneous) then (
+    if opts.UseHilbertFunction and ishgs then (
 	-- compare with kernel RingMap
 	hf := poincare cokernel m;
 	T := degreesRing G;
@@ -182,9 +185,9 @@ pushNonLinear := (opts, f0, M) -> (
 	PairLimit             => opts.PairLimit
     );
 
-    -- todo - what should happen here if the map on degree groups induced by f is not injective?
-    mapback := if (degmapback := makeSectionForDegreeMap(f)) =!= null then
-        map(S, G, map(S^1, S^r, 0) | vars S, DegreeMap => degmapback)
+    mapback := if (mapbackdeg := makeSectionForDegreeMap(f)) =!= null then
+        -- use good degree map on the projection if possible
+        map(S, G, map(S^1, S^r, 0) | vars S, DegreeMap => mapbackdeg)
     else
         map(S, G, map(S^1, S^r, 0) | vars S);
 
