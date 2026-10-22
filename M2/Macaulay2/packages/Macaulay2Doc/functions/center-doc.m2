@@ -1,11 +1,21 @@
 doc ///
 Key
-    centerRing
-    (centerRing, Ring)
+    center
+Headline
+    Compute the center of various mathematical objects
+Subnodes
+    "center(Ring)"
+    "Graphs::center(Graph)"
+    "GradedLieAlgebras::center(LieAlgebra)"
+///
+
+doc ///
+Key
+    (center, Ring)
 Headline
     compute the center of a ring
 Usage
-    z = centerRing R
+    z = center R
 Inputs
     R:Ring
 Outputs
@@ -20,7 +30,7 @@ Description
     Example
         kk = ZZ/3
         R = kk[a..d, SkewCommutative => true]
-        inc = centerRing R;
+        inc = center R;
         Z = source inc;
         netList (ideal Z)_*
     Text
@@ -34,19 +44,19 @@ Description
         kk = ZZ/3
         R = kk[a]
         S = R[x..z, SkewCommutative => true]
-        inc = centerRing  S;
+        inc = center  S;
         Z = source inc;
         netList (ideal Z)_*
     Text
-        When $R$ is commutative, this just computes the identity map $R \rightarrow R$.
+        When $R$ is commutative, this returns the identity map $R \rightarrow R$.
     Example
         kk = ZZ/5
-        assert(centerRing kk === id_kk)
+        assert(center kk === id_kk)
 
         R = ZZ/5[a..c] / ideal {a^2 + b, b^2 + c^3, c^2 - a*b^2}
-         assert(centerRing R === id_R)
+        assert(center R === id_R)
 Caveat
-    Currently only supports commutative rings and skew affine rings.
+    Currently only implemented for commutative rings and skew affine rings.
 SeeAlso
     isCommutative
     isSkewAffineRing

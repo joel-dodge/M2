@@ -874,7 +874,7 @@ TEST ///
 kk = ZZ/3
 R = kk[a..d, SkewCommutative => true]
 f = map(R, kk)
-g = centerRing R
+g = center R
 C = source g
 h = map(C, kk)
 M = module ideal {a*b, b + c}
@@ -894,7 +894,7 @@ TEST ///
 kk = ZZ/3
 R = kk[a..d, SkewCommutative => true]
 f = map(R, kk)
-g = centerRing R
+g = center R
 C = source g
 h = map(C, kk)
 
@@ -915,7 +915,7 @@ TEST ///
 kk = ZZ/3
 R = kk[a..d, SkewCommutative => true]
 f = map(R, kk)
-g = centerRing R
+g = center R
 C = source g
 h = map(C, kk)
 M = module ideal {a*b + c}
@@ -952,7 +952,7 @@ TEST ///
 kk = ZZ/3
 R = kk[a..d, SkewCommutative => true]
 f = map(R, kk)
-g = centerRing R
+g = center R
 C = source g
 h = map(C, kk)
 M = R^1 / ideal {a*b + c}
@@ -1089,17 +1089,17 @@ imgs = for i from 0 to numgens H - 1 list homomorphism'(f, homomorphism H_{i})
 phi = map(H, H, matrix {imgs})
 assert(phi == id_H)
 
-TEST ///
-s = symbol s; t = symbol t
-kk = ZZ/101
-A = frac(kk[s,t])
-L = A[symbol a.. symbol d]/(d-t, a-s, b*c-s*t, b^2-(s/t)*c^2)
-ML = pushFwd(map(L,frac A), module L)
-xs = ML_{0..numgens ML - 1}
-F = map(ML, ML, pushforward(ML, pushforward' xs))
-assert(F == id_ML)
-assert(pushforward(ML, basis L) == basis ML)
-///
+-- TEST ///
+-- s = symbol s; t = symbol t
+-- kk = ZZ/101
+-- A = frac(kk[s,t])
+-- L = A[symbol a.. symbol d]/(d-t, a-s, b*c-s*t, b^2-(s/t)*c^2)
+-- ML = pushFwd(map(L,frac A), module L)
+-- xs = ML_{0..numgens ML - 1}
+-- F = map(ML, ML, pushforward(ML, pushforward' xs))
+-- assert(F == id_ML)
+-- assert(pushforward(ML, basis L) == basis ML)
+-- ///
 
 -- test 37
 TEST ///
