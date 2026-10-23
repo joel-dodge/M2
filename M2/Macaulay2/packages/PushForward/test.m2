@@ -1088,12 +1088,13 @@ H = Hom(f, R^3, I/I^2)
 imgs = for i from 0 to numgens H - 1 list homomorphism'(f, homomorphism H_{i})
 phi = map(H, H, matrix {imgs})
 assert(phi == id_H)
+///
 
 TEST ///
 s = symbol s; t = symbol t
 kk = ZZ/101
 A = frac(kk[s,t])
-L = A[symbol a.. symbol d]/(d-t, a-s, b*c-s*t, b^2-(s/t)*c^2)
+L = A[a..d]/(d-t, a-s, b*c-s*t, b^2-(s/t)*c^2)
 ML = pushFwd(map(L,frac A), module L)
 xs = ML_{0..numgens ML - 1}
 F = map(ML, ML, pushforward(ML, pushforward' xs))
