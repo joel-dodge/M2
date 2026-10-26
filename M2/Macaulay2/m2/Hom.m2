@@ -37,7 +37,7 @@ Hom(Module, Module) := Module => opts -> (M, N) -> (
         H := runHooks((Hom, Module, Module), (opts, M, N), Strategy => opts.Strategy);
         if H === null then error "Hom: no strategy found for the given input";
         -- a hack: we really want to type "Hom(M, N) = ..."
-        H = Y#(Hom, M, N, e) = if opts.MinimalGenerators then trim H else H;
+        H = if opts.MinimalGenerators then trim H else H;
         H.cache.homomorphism = f -> map(N, M, adjoint'(f, M, N), Degree => first degrees source f + degree f);
         H.cache.formation = FunctionApplication { Hom, (M, N, opts) };
         H
