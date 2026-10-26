@@ -1,4 +1,3 @@
-protect toambienthommodule -- cache key for the inclusion of Hom(f, X, Y) into Hom(fX, fY)
 -*
 These methods implement a strategy for computing Hom(M, N) that identifies it as an
 appropriate sub-module of Hom(f*M, f*N) where f*_ is the pushFwd along a RingMap
@@ -7,6 +6,7 @@ f making M and N into finite source f modules.
 In particular this allows the computation of Hom_S(M, N) when S is a non-commutative ring
 in cases where M, N are finite over center S.
 *-
+protect toambienthommodule -- cache key for the inclusion of Hom(f, X, Y) into Hom(fX, fY)
 Hom(RingMap, Ring, Ring)   :=
 Hom(RingMap, Ring, Ideal)  :=
 Hom(RingMap, Ring, Module) :=
@@ -63,7 +63,7 @@ Hom(RingMap, Module, Module) := Module => opts -> (f, M, N) -> (
 
         H.cache.toambienthommodule = inducedMap(H', H);
         H.cache#(homomorphism, R) = H'.cache.homomorphism;
-        H.cache.formation = FunctionApplication { Hom, (f, M, N) };
+        H.cache.formation = FunctionApplication { Hom, (f, M, N, opts) };
 
         remove(M.cache, (computing, Hom, RingMap, Module, Module));
         H
@@ -116,6 +116,11 @@ homomorphism'(RingMap, Matrix) := Matrix => opts -> (f, L) -> (
 End(RingMap, Ring)   :=
 End(RingMap, Ideal)  := Module => o -> (f, X) -> Hom(f, module X, module X, o)
 End(RingMap, Module) := Module => o -> (f, M) -> Hom(f, M, M, o)
+
+-- todo: why does Hom(M, N) sometimes over the exterior algebra without pushing forward?
+-- is the computation ever correct?
+-- does it have the right R-module structure?
+-- answering these question might remove the need for the below methods for computing Ext via pushforward...
 
 --- Ext ---
 Ext(ZZ, RingMap, Ring, Ring)   :=
@@ -199,6 +204,22 @@ yonedaExtension'(RingMap, Complex) := Matrix => opts -> (f, C) -> (
     extd.cache.yonedaExtension' homomorphism'(f, yonedaMap, opts)
 )
 
+yonedaMap'(RingMap, ComplexMap) := Matrix => opts -> (f, F) -> (
+    -- given a map F : res M --> res N of degree -d, construct the corresponding element
+    -- R^1 --> Ext^d(f, M,N), which is unique up to homotopy.
+    -- We only need part of the ComplexMap.
+    --  In fact, we need just the map FM_d --> FN_0, and the fact that it is a complex map.
+    FM := source F;
+    FN := target F;
+    d := - degree F;
+    -- check: FM, FN are free acyclic complexes
+    M := if FM.cache.?Module then FM.cache.Module else error "expected a free resolution of a module";
+    N := if FN.cache.?Module then FN.cache.Module else error "expected a free resolution of a module";
+    E := Ext^d(f, M, N, opts);
+    g := map(N, FM_d, F_d, Degree => degree F_d);
+    E.cache.yonedaExtension' homomorphism'(f, g, opts)
+)
+
 -- todo: yonedaMap'(RingMap, ChainComplexMap)
 
 -------------
@@ -251,7 +272,7 @@ makeHomFromRankOneFreeModule = (f, M, N) -> (
 -- to avoid infinite recursion
 inHomComputation = (M) -> M.cache#?(computing, Hom, RingMap, Module, Module)
 
--- compute "multiplication by r" as an element of Hom_S(M, M)
+-- compute "left multiplication by r" as an element of Hom_S(M, M)
 protect multiplication -- cache key
 getStructureMap = (r, M) -> M.cache#(multiplication, r) ?? (
     -- r: RingElement of R
@@ -274,3 +295,10 @@ getStructureMap = (r, M) -> M.cache#(multiplication, r) ?? (
         homomorphism' map(M, M, pushforward(M, r * pushFwdGens(M)))
     )
 )
+
+isPushFwdHom = (H) -> H.cache.?formation and H.cache.formation#0 === Hom and instance(H.cache.formation#1#0, RingMap)
+pushFwdHomRingMap = (H) -> if isPushFwdHom H then H.cache.formation#1#0
+pushFwdHomSource = (H) -> if isPushFwdHom H then H.cache.formation#1#1
+pushFwdHomTarget = (H) -> if isPushFwdHom H then H.cache.formation#1#2
+pushFwdHomOpts = (H) -> if isPushFwdHom H then H.cache.formation#1#3
+

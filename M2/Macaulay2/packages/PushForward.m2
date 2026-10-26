@@ -388,26 +388,14 @@ isInclusionOfCoefficientRing RingMap := Boolean => inc -> (
     inc vars source inc == promote (vars source inc, target inc)
 )
 
--- various convenience methods to unpack formation data from a pushFwd module
-pushFwdSource = (M) -> (
-    if not M.cache.?formation then return null;
-    if M.cache.formation#0 =!= pushFwd then return null;
-    M.cache.formation#1#1
-)
-
-pushFwdOpts = (M) -> (
-    if not M.cache.?formation then return null;
-    if M.cache.formation#0 =!= pushFwd then return null;
-    M.cache.formation#1#2
-)
-
-pushFwdRingMap = (M) -> (
-    if not M.cache.?formation then return null;
-    if M.cache.formation#0 =!= pushFwd then return null;
-    M.cache.formation#1#0
-)
 
 isRankOneFree = (M) -> isFreeModule M and rank M == 1
+
+-- various convenience methods to unpack formation data from a pushFwd module
+isPushFwd = (M) -> M.cache.?formation and M.cache.formation#0 === pushFwd
+pushFwdRingMap = (M) ->  if isPushFwd M then M.cache.formation#1#0
+pushFwdSource = (M) -> if isPushFwd M then M.cache.formation#1#1
+pushFwdOpts = (M) -> if isPushFwd M then M.cache.formation#1#2
 
 ---------------
 -- Hom / Ext --
