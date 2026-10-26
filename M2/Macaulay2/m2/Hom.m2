@@ -9,8 +9,8 @@ needs "matrix1.m2"
 Hom = method(Options => {
     DegreeLimit         => null,
     MinimalGenerators   => true,
-    Strategy            => null
-})
+    Strategy            => null,
+    })
 
 End = method(Options => options Hom)
 End(Thing) := Thing => o -> X -> Hom(X, X, o)
@@ -33,14 +33,13 @@ Hom(Module, Module) := Module => opts -> (M, N) -> (
     -- M.cache is a hashless (hence ageless) CacheTable, but
     -- M.cache.cache is a MutableHashTable, hence has an age.
     Y := youngest(M.cache.cache, N.cache.cache);
-    Y#(Hom, M, N, e) ?? (
+    Y#(Hom, M, N, opts) ??= (
         H := runHooks((Hom, Module, Module), (opts, M, N), Strategy => opts.Strategy);
         if H === null then error "Hom: no strategy found for the given input";
-        trim' := if opts.MinimalGenerators then trim else identity;
         -- a hack: we really want to type "Hom(M, N) = ..."
         H = Y#(Hom, M, N, e) = if opts.MinimalGenerators then trim H else H;
         H.cache.homomorphism = f -> map(N, M, adjoint'(f, M, N), Degree => first degrees source f + degree f);
-        H.cache.formation = FunctionApplication { Hom, (M, N, DegreeLimit => e) };
+        H.cache.formation = FunctionApplication { Hom, (M, N, opts) };
         H
     )
 )
