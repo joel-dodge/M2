@@ -1,4 +1,3 @@
---test 0
 TEST ///
 kk=ZZ/32003
 R4=kk[a..d]
@@ -17,7 +16,6 @@ Q=pushFwd(F,P)
 assert (pdim Q==0)
 ///
 
--- test 1
 TEST ///
 P3=QQ[a..d]
 M=comodule monomialCurveIdeal(P3,{1,2,3})
@@ -29,7 +27,6 @@ N=pushFwd(F,M)
 assert(hilbertPolynomial M==hilbertPolynomial N)
 ///
 
--- test 2
 TEST ///
 kk = QQ
 R = kk[x,y]/(x^2-y^3-y^5)
@@ -41,7 +38,6 @@ assert(ann q == ideal(x,y))
 assert isModuleFinite map(R', R)
 ///
 
--- test 3
 TEST ///
 kkk=ZZ/23
 kk=frac(kkk[u])
@@ -75,7 +71,6 @@ assert(r1==r2)
 assert(flatten entries relations r2 == flatten entries relations r3)
 ///
 
--- test 4
 TEST ///
 kk=ZZ/3
 T=frac(kk[t])
@@ -99,7 +94,6 @@ p=pushFwd(f,i/i^3)
 assert(numgens p==2)
 ///
 
--- test 5
 TEST ///
 kk=QQ
 A=kk[x]
@@ -113,7 +107,6 @@ d=map(B^1,B^1,matrix{{y^2}})
 assert(pushFwd(f,d)==0)
 ///
 
--- test 6
 TEST ///
 kk=QQ
 A=kk[t]
@@ -125,7 +118,6 @@ assert not isModuleFinite f
 assert(isFreeModule pushFwd(f,module i))
 ///
 
--- test 7
 TEST ///
 kk=ZZ/101
 n=2
@@ -414,7 +406,6 @@ assert(pushforward(rS, a_S * rB) - a * pushforward(rS, rB) == 0)
 assert(a^2 * pushforward(rS, rB) == 0)
 ///
 
--- test 21
 TEST ///
 -- pushforward and pushforward' are inverse - submodule case
 -- degrees are screwed up observe weird asserts.
@@ -433,7 +424,6 @@ M = pushFwd(N)
 assert(ns - pushforward' pushforward(M, ns) == 0)
 ///
 
--- test 22
 TEST ///
 -- pushforward and pushforward' are inverse - subquotient case
 kk = ZZ/101
@@ -452,7 +442,6 @@ M = pushFwd(N)
 assert(ns - pushforward' pushforward(M, ns) == 0)
 ///
 
--- test 23
 TEST ///
 kk = ZZ/101
 S = kk[a..c, SkewCommutative => true];
@@ -470,7 +459,6 @@ M = pushFwd(N)
 assert(ns == pushforward' pushforward(M, ns))
 ///
 
--- test 24
 TEST ///
 -- another skew commutative case that triggered a bug fix or two
 
@@ -482,7 +470,6 @@ ms = I'_{0..numgens I' - 1}
 assert(ms == pushforward(I', pushforward' ms))
 ///
 
--- test 25
 TEST ///
 -- pushFwd of 1x1 matrix is compatible with pushFwd of elements in source
 kk = ZZ/101
@@ -509,7 +496,6 @@ ms = pushforward' rS_{0..numgens rS - 1}
 assert(pF * (pushforward(rS, ms)) - pushforward(rS, F * ms) == 0)
 ///
 
--- test 26
 TEST ///
 -- pushFwd of higher rank matrix is compatible with pushFwd / back of module elements
 kk = ZZ/101
@@ -527,7 +513,6 @@ ns = matrix N_{0..numgens N - 1}
 assert(pushforward(M, F * ns) == pF * pushforward(M, ns))
 ///
 
--- test 27
 TEST ///
 -- maps back and forth work for matrices not just columns
 kk = ZZ/101
@@ -544,7 +529,6 @@ ms = M_{0..numgens M - 1}
 assert(ms == pushforward(M, pushforward' ms))
 ///
 
--- test 28
 TEST ///
 -- test various interfaces for pushforward and pushforward' methods
 kk = ZZ/101
@@ -579,7 +563,6 @@ assert(n == pushforward' pushforward(f, n))
 assert(n == pushforward' pushforward(f, vector n))
 ///
 
--- test 29
 TEST ///
 -- pushforward interface for ring elements
 kk = ZZ/101
@@ -593,7 +576,6 @@ pushFwd(f)
 assert(r * 1_R^1 == pushforward' pushforward(f, r))
 ///
 
--- test 30
 TEST ///
 kk = ZZ/101
 R = kk[a,b] / ideal {a^2 + 1, b^3 + a^2*b + 2}
@@ -608,7 +590,6 @@ assert(matrix {{a + b}} == pushforward' pushforward(M, a + b))
 assert(matrix {{a + b}} == pushforward' pushforward(M', a + b))
 ///
 
--- test 31
 TEST ///
 -- a simple edge cases around pushFwd of explicit ring map
 kk = ZZ/101
@@ -620,7 +601,6 @@ M' = pushFwd id_R
 assert(M == module R)
 ///
 
--- test 32
 TEST ///
 -- from examples
 kk = ZZ/101
@@ -636,7 +616,6 @@ assert(g - gg == 0)
 assert(fz^3-fy^7 == 0)
 ///
 
--- test 33
 TEST ///
 -- pushforward of skew ring along map which is not the inclusion of its coefficient ring
 kk = ZZ/101
@@ -656,7 +635,6 @@ ms = M_{0..numgens M - 1}
 assert(ms ==  pushforward' pushforward(g, ms))
 ///
 
--- test 34
 TEST ///
 -- this test is a somewhat technical guardrail showing the necessity of
 -- untwisting by the antipode map when we apply pushforward to elements.
@@ -672,7 +650,6 @@ assert(gensM' == pushforward(f, pushforward' gensM'))
 assert(gensM == pushforward' pushforward(f, gensM))
 ///
 
--- test 35
 TEST ///
 -- the case of the zero module shows up naturally when applying pushFwd to a
 -- free resolution which is why we are fussing over it.
@@ -684,7 +661,6 @@ N = pushFwd(f, M)
 assert(pushforward' pushforward(N, 0_M) == 0_M)
 ///
 
--- test 36
 TEST ///
 kk = ZZ/101
 A = kk[x]
@@ -843,6 +819,26 @@ M = R^1/I
 N = I / I^3
 
 -- this does not work yet need to deal with modeling fg Hom module even in cases where the source is not fg (but target is)
+///
+
+TEST ///
+-- yonedaMap'(RingMap, ComplexMap)
+-- over noncommutative rings
+kk = ZZ/11
+R = kk[s, t]/ ideal {s^2, t^3}
+f = map(R, kk)
+I = ideal vars R
+M = R^1/I
+N = I / I^3
+E = Ext^1(f, M, N)
+imgs = matrix {for i from 0 to numgens E - 1 list yonedaMap'(f, yonedaMap(E_{i}, LengthLimit => 2))}
+phi = map(E, E, imgs)
+assert(phi == id_E)
+
+E = Ext^2(f, M, N)
+imgs = matrix {for i from 0 to numgens E - 1 list yonedaMap'(f, yonedaMap(E_{i}, LengthLimit => 2))}
+phi = map(E, E, imgs)
+assert(phi == id_E)
 ///
 
 TEST ///
@@ -1102,7 +1098,6 @@ assert(F == id_ML)
 assert(pushforward(ML, basis L) == basis ML)
 ///
 
--- test 37
 TEST ///
 debug needsPackage "PushForward"
 s = symbol s; t = symbol t
@@ -1120,7 +1115,6 @@ assert(F == id_ML)
 assert(pushforward' basis ML - basis L == 0)
 ///
 
--- test 38
 TEST ///
 debug needsPackage "PushForward"
 s = symbol s; t = symbol t
@@ -1129,15 +1123,14 @@ L = A[symbol b, symbol c]/(b*c-13, b^3-c^2)
 inc = map(L, A)
 assert isInclusionOfCoefficientRing inc
 assert isModuleFinite L
-(LA, bas, pf) = pushFwd inc -- this works
+LA = pushFwd inc -- this works
 xs = LA_{0..numgens LA - 1}
 F = map(LA, LA, pushforward(LA, pushforward' xs))
 assert(F == id_LA)
 assert(pushforward' basis LA == basis L)
-assert(matrix(b^2 + c^2) == pushforward' pf(b^2+c^2))
+assert(matrix(b^2 + c^2) == pushforward' pushforward(inc, b^2+c^2))
 ///
 
--- test 39
 TEST ///
 s = symbol s; t = symbol t
 kk = ZZ/101
@@ -1152,7 +1145,6 @@ assert(F == id_P)
 assert(pushforward' basis P - basis L == 0)
 ///
 
--- test 40
 TEST ///
 -- former DE + MES example bug
 -- can compute ker of matrix between modules over different rings
@@ -1166,7 +1158,6 @@ x = matrix vector {0, -t, s, 0};
 assert(isSubset(image x, ker f))
 ///
 
--- test 41
 TEST ///
 -- former DE + MES example bug
 -- computation of kernel succeeds with trivial kernel
