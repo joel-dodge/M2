@@ -943,6 +943,20 @@ assert(phi^-1 * phi == id_H')
 ///
 
 TEST ///
+-- pushFwd to commutative coefficientRing which is not a field and compute Hom
+kk = ZZ/7
+R = kk[x, y]/{y^2-x^3}
+S = R[a..d, SkewCommutative => true]
+I = ideal {a*x + b*c*y}
+f = map(S, R)
+H = Hom(f, I, I);
+
+imgs = matrix {for i from 0 to numgens H - 1 list homomorphism'(f, homomorphism H_{i})}
+phi = map(H, H, imgs)
+assert(phi == id_H)
+///
+
+TEST ///
 -- Hom and pushFwd functors compose nicely for non-homogeneous module
 -- quotient by ideal case
 kk = ZZ/3

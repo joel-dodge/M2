@@ -241,19 +241,23 @@ makeHomModule = (f, M', N', H') -> (
         return makeHomFromRankOneFreeModule(f, M, N);
     );
 
+    -- build up a set to use to test linearity
     C := R / (intersect(annihilator pushFwdSource M', annihilator pushFwdSource N'));
     C' := pushFwd(map(C, R) * f);
-    -- puzzle: for non-commutative rings we need basis here and not just gens.
-    -- possibly due to failure of some associativity relations for modules over non-commutative rings?
-    testElements := if isCommutative R then C'_{0..numgens C' - 1} else basis C';
-    -- checking linearity for these elements suffices
-    liftedGens := lift(pushforward'(testElements), R);
+    liftedGens := first entries lift(pushFwdGens C', R);
+    if isSkewCommutative R then (
+        -- puzzle: for non-commutative rings it is not enough to take gens
+        -- possibly due to failure of some associativity relations for modules over non-commutative rings?
+        skews := apply(R.SkewCommutative, i -> R_i);
+        -- testSkews := select(gs, x -> isMember(x, skews));
+        liftedGens = unique (liftedGens | first entries basis(R, Variables => skews));
+    );
 
     rightCompose := compose(M', M', N');
     leftCompose := compose(M', N', N');
     gensH' := H'_{0..numgens H' - 1};
     -- build the linear maps H' -> H' whose kernels witness R-linearity
-    H := kernel matrix for r in first entries liftedGens list (
+    H := kernel matrix for r in liftedGens list (
         rMultForM := getStructureMap(r, M');
         rMultForN := getStructureMap(r, N');
         -- wrapping in nested list so we produce the correct block matrix outside the loop
